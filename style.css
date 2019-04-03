@@ -163,11 +163,11 @@ i {
 	margin: 2px 10px;
 }
 .box {
-	position: relative;
-	position: 30px;
+	position: 200px;
 	width: 180px;
 	height: 374px;
 	border: 3px solid #73ad21;
+	z-index: 900;
 }
 
 #dice-1 {
@@ -194,6 +194,11 @@ i {
 	/* Bottom Right */
 	top: 350px;
 	left: 500px;
+}
+
+#s-card-0,
+#s-card-1 {
+	cursor: pointer;
 }
 
 .winner {
