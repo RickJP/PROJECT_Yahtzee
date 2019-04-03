@@ -101,6 +101,7 @@ function getSelectionFromPlayer(e) {
 	document.querySelector('.btn-roll').classList.toggle('disabled');
 
 	// Update score after player selection option
+
 	disableOptions();
 
 	if (rollNumber === 2) {

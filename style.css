@@ -180,12 +180,21 @@ i {
 .score-card > div {
 	margin: 2px 10px;
 }
+
 .box {
-	position: 200px;
-	width: 180px;
+	position: absolute;
+	left: 254px;
+	width: 40px;
 	height: 400px;
-	border: 3px solid #73ad21;
-	z-index: 900;
+	border: 3px solid red;
+	font-family: Lato;
+	font-weight: 300;
+}
+.box1 {
+	left: 254px;
+}
+.box2 {
+	left: 754px;
 }
 
 #dice-1 {
