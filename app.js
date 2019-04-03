@@ -5,6 +5,9 @@ var activePlayer,
 	rollNumber;
 const DICE_DIR = 'images/dice/';
 const DICE_HOLD_PREFIX = 'h';
+
+const rollTable = new Map();
+
 init();
 
 // START A NEW GAME => Call initialize function
@@ -18,6 +21,38 @@ function getDiceImgFile(diceId) {
 function isHeld(dImg) {
 	// Return whether dice is held or not
 	return dImg.charAt(0) === 'h' ? true : false;
+}
+
+// function updateRollTable() {
+// 	for (let i = 1; i < 6; i++) {
+// 		document.
+
+// 	}
+// }
+
+function getDiceNumCat(dNum) {
+	let category;
+	switch (dNum) {
+		case 1:
+			category = 'ones';
+			break;
+		case 2:
+			category = 'twos';
+			break;
+		case 3:
+			category = 'threes';
+			break;
+		case 4:
+			category = 'fours';
+			break;
+		case 5:
+			category = 'fives';
+			break;
+		case 6:
+			category = 'sixes';
+			break;
+	}
+	return category;
 }
 
 function rollTheDice() {
@@ -34,12 +69,29 @@ function rollTheDice() {
 
 			diceRolled = `${DICE_DIR}${diceNum}.png`;
 			diceRef = `dice-${String(i)}`;
+
+			// Set the value for each dice
+			document.getElementById(diceRef).setAttribute('value', diceNum);
+
+			// Show the dice
 			document.getElementById(diceRef).style.display = 'block';
 			document.getElementById(diceRef).src = diceRolled;
 		} else {
 			continue;
 		}
+
+		category = getDiceNumCat(diceNum);
+		// Update Roll Table
+		addOne = rollTable.get(category) + 1;
+		rollTable.set(category, addOne);
 	}
+
+	console.log(rollTable.get('ones'));
+	console.log(rollTable.get('twos'));
+	console.log(rollTable.get('threes'));
+	console.log(rollTable.get('fours'));
+	console.log(rollTable.get('fives'));
+	console.log(rollTable.get('sixes'));
 }
 
 document.querySelector('.btn-roll').addEventListener('click', function() {
@@ -49,6 +101,7 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 
 		// Disable the roll button
 		document.querySelector('.btn-roll').disabled = true;
+		document.querySelector('.btn-roll').classList.toggle('disabled');
 
 		// Enable category selection for current player (activePlayer)
 		console.log('Active player: ' + activePlayer);
@@ -68,6 +121,7 @@ document.getElementById('s-card-0').addEventListener('click', (e) => {
 
 	// Enable roll button
 	document.querySelector('.btn-roll').disabled = false;
+	document.querySelector('.btn-roll').classList.toggle('disabled');
 
 	if (rollNumber === 2) {
 		nextPlayer();
@@ -83,12 +137,12 @@ document.getElementById('s-card-1').addEventListener('click', (e) => {
 
 	// Enable roll button
 	document.querySelector('.btn-roll').disabled = false;
+	document.querySelector('.btn-roll').classList.toggle('disabled');
 
 	if (rollNumber === 2) {
+		// Two rolls completed, so it is the next players turn
 		nextPlayer();
 	}
-
-	console.log(e.target.classList.value);
 });
 
 // document.querySelector('.score-card').addEventListener('click', (e) => {
@@ -111,6 +165,7 @@ document.getElementById('dice-group').addEventListener('click', (e) => {
 		toggledDiceImg = diceImg.charAt(0) === 'h' ? diceImg.substr(1) : `h${diceImg}`;
 		document.getElementById(e.target.id).src = `${DICE_DIR}${toggledDiceImg}`;
 	}
+	document.getElementById(e.target.id).classList.toggle('held');
 });
 
 function nextPlayer() {
@@ -120,6 +175,7 @@ function nextPlayer() {
 
 	resetTheDice();
 	removeAllDice();
+	resetRollTable();
 
 	document.getElementById('dice-group').style.pointerEvents = 'auto';
 	rollNumber = 0;
@@ -132,6 +188,8 @@ function resetTheDice() {
 		console.log(diceImg);
 		isHeld(diceImg) ? (diceImg = diceImg.substr(1)) : null;
 		document.getElementById(`dice-${i}`).src = `${DICE_DIR}${diceImg}`;
+
+		document.getElementById(diceRef).removeAttribute('value');
 	}
 }
 
@@ -139,7 +197,17 @@ function removeAllDice() {
 	// Clear all dice from the UI
 	for (let i = 1; i < 6; i++) {
 		document.getElementById(`dice-${i}`).style.display = 'none';
+		document.getElementById(`dice-${i}`).classList.remove('held');
 	}
+}
+
+function resetRollTable() {
+	rollTable.set('ones', 0);
+	rollTable.set('twos', 0);
+	rollTable.set('threes', 0);
+	rollTable.set('fours', 0);
+	rollTable.set('fives', 0);
+	rollTable.set('sixes', 0);
 }
 
 function init() {
@@ -147,6 +215,8 @@ function init() {
 	gamePlaying = true;
 	rollNumber = 0;
 	removeAllDice();
+	document.querySelector('.btn-roll').classList.remove('disabled');
+	document.querySelector('.btn-roll').disabled = false;
 
 	document.getElementById('name-0').textContent = 'Player 1';
 	document.getElementById('name-1').textContent = 'Player 2';
@@ -158,4 +228,6 @@ function init() {
 
 	document.getElementById('s-card-0').style.pointerEvents = 'none';
 	document.getElementById('s-card-1').style.pointerEvents = 'none';
+
+	resetRollTable();
 }

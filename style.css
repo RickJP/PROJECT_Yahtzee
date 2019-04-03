@@ -60,7 +60,7 @@ body {
 }
 
 .active {
-	background-color: #f7f7f7;
+	background-color: #d9e0f8de;
 }
 .active .player-name {
 	font-weight: 300;
@@ -134,9 +134,13 @@ i {
 }
 .btn-roll {
 	top: 503px;
+	color: #fff;
+	background-color: rgb(116, 129, 248);
 }
-.btn-hold {
-	top: 467px;
+
+.disabled {
+	color: rgb(173, 173, 173);
+	background-color: rgb(187, 187, 187);
 }
 
 .dice {
@@ -152,6 +156,11 @@ i {
 
 	-webkit-transition: -webkit-transform 0.4s;
 	transition: transform 0.4s;
+}
+
+.held {
+	-webkit-transform: scale(0.6);
+	transform: scale(0.6);
 }
 
 .score-card {
