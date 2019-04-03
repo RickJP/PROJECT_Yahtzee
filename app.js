@@ -1,8 +1,8 @@
 var activePlayer,
 	gamePlaying = true,
 	previousRoll = 0,
-	newGame = false;
-rollNumber = 0;
+	newGame = false,
+	rollNumber;
 const DICE_DIR = 'images/dice/';
 const DICE_HOLD_PREFIX = 'h';
 init();
@@ -53,6 +53,11 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 		// Enable category selection for current player (activePlayer)
 		console.log('Active player: ' + activePlayer);
 		document.getElementById(`s-card-${activePlayer}`).style.pointerEvents = 'auto';
+
+		// Disable dice group on second roll
+		if (rollNumber === 2) {
+			document.getElementById('dice-group').style.pointerEvents = 'none';
+		}
 	}
 });
 
@@ -65,7 +70,6 @@ document.getElementById('s-card-0').addEventListener('click', (e) => {
 	document.querySelector('.btn-roll').disabled = false;
 
 	if (rollNumber === 2) {
-		removeAllDice();
 		nextPlayer();
 	}
 
@@ -76,8 +80,13 @@ document.getElementById('s-card-0').addEventListener('click', (e) => {
 document.getElementById('s-card-1').addEventListener('click', (e) => {
 	// Disable category selection
 	document.getElementById('s-card-1').style.pointerEvents = 'none';
+
 	// Enable roll button
 	document.querySelector('.btn-roll').disabled = false;
+
+	if (rollNumber === 2) {
+		nextPlayer();
+	}
 
 	console.log(e.target.classList.value);
 });
@@ -108,12 +117,27 @@ function nextPlayer() {
 	activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
 	document.querySelector('.player-0-panel').classList.toggle('active');
 	document.querySelector('.player-1-panel').classList.toggle('active');
+
+	resetTheDice();
 	removeAllDice();
+
+	document.getElementById('dice-group').style.pointerEvents = 'auto';
+	rollNumber = 0;
+}
+
+function resetTheDice() {
+	for (let i = 1; i < 6; i++) {
+		diceImg = getDiceImgFile(`dice-${i}`);
+
+		console.log(diceImg);
+		isHeld(diceImg) ? (diceImg = diceImg.substr(1)) : null;
+		document.getElementById(`dice-${i}`).src = `${DICE_DIR}${diceImg}`;
+	}
 }
 
 function removeAllDice() {
 	// Clear all dice from the UI
-	for (let i = 1; i <= 5; i++) {
+	for (let i = 1; i < 6; i++) {
 		document.getElementById(`dice-${i}`).style.display = 'none';
 	}
 }
