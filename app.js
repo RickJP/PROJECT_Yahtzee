@@ -102,6 +102,17 @@ function showOptions() {
 	}
 }
 
+function getSelectionFromPlayer() {
+	// Enable roll button
+	document.querySelector('.btn-roll').disabled = false;
+	document.querySelector('.btn-roll').classList.toggle('disabled');
+	if (rollNumber === 2) {
+		nextPlayer();
+	}
+
+	// Update score after player selection option
+}
+
 document.querySelector('.btn-roll').addEventListener('click', function() {
 	if (gamePlaying) {
 		rollTheDice();
@@ -124,31 +135,11 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 
 // Get selection from player 1
 document.getElementById('s-card-0').addEventListener('click', (e) => {
-	// Disable category selection
-	//document.getElementById('s-card-0').style.pointerEvents = 'none';
-
-	// Enable roll button
-	document.querySelector('.btn-roll').disabled = false;
-	document.querySelector('.btn-roll').classList.toggle('disabled');
-
-	if (rollNumber === 2) {
-		nextPlayer();
-	}
+	getSelectionFromPlayer();
 });
-
 // Get selection from player 2
 document.getElementById('s-card-1').addEventListener('click', (e) => {
-	// Disable category selection
-	//document.getElementById('s-card-1').style.pointerEvents = 'none';
-
-	// Enable roll button
-	document.querySelector('.btn-roll').disabled = false;
-	document.querySelector('.btn-roll').classList.toggle('disabled');
-
-	if (rollNumber === 2) {
-		// Two rolls completed, so it is the next players turn
-		nextPlayer();
-	}
+	getSelectionFromPlayer();
 });
 
 //TODO
@@ -218,14 +209,13 @@ function resetRollTable() {
 	rollTable.set('sixes', 0);
 }
 
-function resetOptions() {
+function resetOptions(player = activePlayer) {
 	for (let i = 0; i < 6; i++) {
-		option = document.querySelectorAll(`#s-card-${activePlayer}`)[0].children[i].className;
+		option = document.querySelectorAll(`#s-card-${player}`)[0].children[i].className;
 
-		console.log(activePlayer);
-		activePlayer === 0 ? (bgColor = 'white') : (bgColor = '#d9e0f8de');
+		player === 0 ? (bgColor = 'white') : (bgColor = '#d9e0f8de');
 
-		if (activePlayer === 0) {
+		if (player === 0) {
 			bgColor0 = 'white';
 			bgColor1 = '#d9e0f8de';
 		} else {
@@ -247,14 +237,15 @@ function init() {
 
 	document.getElementById('name-0').textContent = 'Player 1';
 	document.getElementById('name-1').textContent = 'Player 2';
-	document.querySelector('.player-0-panel').classList.remove('winner');
-	document.querySelector('.player-1-panel').classList.remove('winner');
-	document.querySelector('.player-0-panel').classList.remove('active');
-	document.querySelector('.player-1-panel').classList.remove('active');
+	// document.querySelector('.player-0-panel').classList.remove('winner');
+	// document.querySelector('.player-1-panel').classList.remove('winner');
+	// document.querySelector('.player-0-panel').classList.remove('active');
+	// document.querySelector('.player-1-panel').classList.remove('active');
 	document.querySelector('.player-0-panel').classList.add('active');
 
 	document.getElementById('s-card-0').style.pointerEvents = 'none';
 	document.getElementById('s-card-1').style.pointerEvents = 'none';
 
+	resetOptions(1);
 	resetRollTable();
 }
