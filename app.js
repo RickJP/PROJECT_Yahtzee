@@ -23,13 +23,6 @@ function isHeld(dImg) {
 	return dImg.charAt(0) === 'h' ? true : false;
 }
 
-// function updateRollTable() {
-// 	for (let i = 1; i < 6; i++) {
-// 		document.
-
-// 	}
-// }
-
 function getDiceNumCat(dNum) {
 	let category;
 	switch (dNum) {
@@ -102,15 +95,26 @@ function showOptions() {
 	}
 }
 
-function getSelectionFromPlayer() {
+function getSelectionFromPlayer(e) {
 	// Enable roll button
 	document.querySelector('.btn-roll').disabled = false;
 	document.querySelector('.btn-roll').classList.toggle('disabled');
+
+	// Update score after player selection option
+	disableOptions();
+
 	if (rollNumber === 2) {
 		nextPlayer();
 	}
+}
 
-	// Update score after player selection option
+function disableOptions() {
+	for (let i = 1; i < 14; i++) {
+		// Reset BG Color
+		document.getElementById(`${activePlayer}-${i}`).style.backgroundColor = '#d9e0f8de';
+		// Set options to diabled
+		document.getElementById(`${activePlayer}-${i}`).style.pointerEvents = 'none';
+	}
 }
 
 document.querySelector('.btn-roll').addEventListener('click', function() {
@@ -135,11 +139,11 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 
 // Get selection from player 1
 document.getElementById('s-card-0').addEventListener('click', (e) => {
-	getSelectionFromPlayer();
+	getSelectionFromPlayer(e);
 });
 // Get selection from player 2
 document.getElementById('s-card-1').addEventListener('click', (e) => {
-	getSelectionFromPlayer();
+	getSelectionFromPlayer(e);
 });
 
 //TODO
@@ -163,14 +167,15 @@ document.getElementById('dice-group').addEventListener('click', (e) => {
 		// Do not allow five dice to be held, but allow other dice to be unheld
 		toggledDiceImg = diceImg.charAt(0) === 'h' ? diceImg.substr(1) : `h${diceImg}`;
 		document.getElementById(e.target.id).src = `${DICE_DIR}${toggledDiceImg}`;
+		document.getElementById(e.target.id).classList.toggle('held');
 	}
-	document.getElementById(e.target.id).classList.toggle('held');
 });
 
 function nextPlayer() {
-	resetOptions();
+	//resetOptions();
 
 	activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+
 	document.querySelector('.player-0-panel').classList.toggle('active');
 	document.querySelector('.player-1-panel').classList.toggle('active');
 
@@ -209,43 +214,42 @@ function resetRollTable() {
 	rollTable.set('sixes', 0);
 }
 
-function resetOptions(player = activePlayer) {
-	for (let i = 0; i < 6; i++) {
-		option = document.querySelectorAll(`#s-card-${player}`)[0].children[i].className;
+// function resetOptions(player = activePlayer) {
+// 	for (let i = 0; i < 6; i++) {
+// 		option = document.querySelectorAll(`#s-card-${player}`)[0].children[i].className;
 
-		player === 0 ? (bgColor = 'white') : (bgColor = '#d9e0f8de');
-
-		if (player === 0) {
-			bgColor0 = 'white';
-			bgColor1 = '#d9e0f8de';
-		} else {
-			bgColor0 = '#d9e0f8de';
-			bgColor1 = 'white';
-		}
-		document.querySelector(`#s-card-0 .${option}`).style.backgroundColor = bgColor0;
-		document.querySelector(`#s-card-1 .${option}`).style.backgroundColor = bgColor1;
-	}
-}
+// 		if (player === 0) {
+// 			bgColor0 = 'white';
+// 			bgColor1 = '#d9e0f8de';
+// 		} else {
+// 			bgColor0 = '#d9e0f8de';
+// 			bgColor1 = 'white';
+// 		}
+// 	}
+// }
 
 function init() {
 	activePlayer = 0;
 	gamePlaying = true;
 	rollNumber = 0;
-	removeAllDice();
+
 	document.querySelector('.btn-roll').classList.remove('disabled');
 	document.querySelector('.btn-roll').disabled = false;
 
 	document.getElementById('name-0').textContent = 'Player 1';
 	document.getElementById('name-1').textContent = 'Player 2';
-	// document.querySelector('.player-0-panel').classList.remove('winner');
-	// document.querySelector('.player-1-panel').classList.remove('winner');
-	// document.querySelector('.player-0-panel').classList.remove('active');
-	// document.querySelector('.player-1-panel').classList.remove('active');
+	document.querySelector('.player-0-panel').classList.remove('winner');
+	document.querySelector('.player-1-panel').classList.remove('winner');
+	document.querySelector('.player-0-panel').classList.remove('active');
+	document.querySelector('.player-1-panel').classList.remove('active');
+
 	document.querySelector('.player-0-panel').classList.add('active');
 
 	document.getElementById('s-card-0').style.pointerEvents = 'none';
 	document.getElementById('s-card-1').style.pointerEvents = 'none';
 
-	resetOptions(1);
+	// resetOptions(1);
+	removeAllDice();
 	resetRollTable();
+	disableOptions();
 }
