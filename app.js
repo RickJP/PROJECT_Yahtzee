@@ -56,7 +56,6 @@ function getDiceNumCat(dNum) {
 }
 
 function rollTheDice() {
-	//console.log(`Roll Number ${rollNumber}`);
 	const dicePrefix = 'dice-';
 
 	for (let i = 1; i <= 5; i++) {
@@ -80,18 +79,27 @@ function rollTheDice() {
 			continue;
 		}
 
-		category = getDiceNumCat(diceNum);
 		// Update Roll Table
+		category = getDiceNumCat(diceNum);
 		addOne = rollTable.get(category) + 1;
 		rollTable.set(category, addOne);
 	}
+}
 
-	console.log(rollTable.get('ones'));
-	console.log(rollTable.get('twos'));
-	console.log(rollTable.get('threes'));
-	console.log(rollTable.get('fours'));
-	console.log(rollTable.get('fives'));
-	console.log(rollTable.get('sixes'));
+function getValFromCat(category) {
+	return rollTable.get(category);
+}
+
+function showOptions() {
+	for (let i = 0; i < 6; i++) {
+		//console.log(document.querySelectorAll(`#s-card-${activePlayer}`)[0].children[i].className);
+		// Get an option
+		option = document.querySelectorAll(`#s-card-${activePlayer}`)[0].children[i].className;
+		if (getValFromCat(option) > 0) {
+			document.querySelector(`#s-card-${activePlayer} .${option}`).style.backgroundColor = 'yellow';
+			document.querySelector(`#s-card-${activePlayer} .${option}`).style.pointerEvents = 'auto';
+		}
+	}
 }
 
 document.querySelector('.btn-roll').addEventListener('click', function() {
@@ -104,20 +112,20 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 		document.querySelector('.btn-roll').classList.toggle('disabled');
 
 		// Enable category selection for current player (activePlayer)
-		console.log('Active player: ' + activePlayer);
-		document.getElementById(`s-card-${activePlayer}`).style.pointerEvents = 'auto';
+		//document.getElementById(`s-card-${activePlayer}`).style.pointerEvents = 'auto';
 
 		// Disable dice group on second roll
 		if (rollNumber === 2) {
 			document.getElementById('dice-group').style.pointerEvents = 'none';
 		}
+		showOptions();
 	}
 });
 
 // Get selection from player 1
 document.getElementById('s-card-0').addEventListener('click', (e) => {
 	// Disable category selection
-	document.getElementById('s-card-0').style.pointerEvents = 'none';
+	//document.getElementById('s-card-0').style.pointerEvents = 'none';
 
 	// Enable roll button
 	document.querySelector('.btn-roll').disabled = false;
@@ -126,14 +134,12 @@ document.getElementById('s-card-0').addEventListener('click', (e) => {
 	if (rollNumber === 2) {
 		nextPlayer();
 	}
-
-	console.log(e.target.classList.value);
 });
 
 // Get selection from player 2
 document.getElementById('s-card-1').addEventListener('click', (e) => {
 	// Disable category selection
-	document.getElementById('s-card-1').style.pointerEvents = 'none';
+	//document.getElementById('s-card-1').style.pointerEvents = 'none';
 
 	// Enable roll button
 	document.querySelector('.btn-roll').disabled = false;
@@ -144,6 +150,8 @@ document.getElementById('s-card-1').addEventListener('click', (e) => {
 		nextPlayer();
 	}
 });
+
+//TODO
 
 // document.querySelector('.score-card').addEventListener('click', (e) => {
 // 	console.log('clicked score card');
@@ -169,6 +177,8 @@ document.getElementById('dice-group').addEventListener('click', (e) => {
 });
 
 function nextPlayer() {
+	resetOptions();
+
 	activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
 	document.querySelector('.player-0-panel').classList.toggle('active');
 	document.querySelector('.player-1-panel').classList.toggle('active');
@@ -184,8 +194,6 @@ function nextPlayer() {
 function resetTheDice() {
 	for (let i = 1; i < 6; i++) {
 		diceImg = getDiceImgFile(`dice-${i}`);
-
-		console.log(diceImg);
 		isHeld(diceImg) ? (diceImg = diceImg.substr(1)) : null;
 		document.getElementById(`dice-${i}`).src = `${DICE_DIR}${diceImg}`;
 
@@ -208,6 +216,25 @@ function resetRollTable() {
 	rollTable.set('fours', 0);
 	rollTable.set('fives', 0);
 	rollTable.set('sixes', 0);
+}
+
+function resetOptions() {
+	for (let i = 0; i < 6; i++) {
+		option = document.querySelectorAll(`#s-card-${activePlayer}`)[0].children[i].className;
+
+		console.log(activePlayer);
+		activePlayer === 0 ? (bgColor = 'white') : (bgColor = '#d9e0f8de');
+
+		if (activePlayer === 0) {
+			bgColor0 = 'white';
+			bgColor1 = '#d9e0f8de';
+		} else {
+			bgColor0 = '#d9e0f8de';
+			bgColor1 = 'white';
+		}
+		document.querySelector(`#s-card-0 .${option}`).style.backgroundColor = bgColor0;
+		document.querySelector(`#s-card-1 .${option}`).style.backgroundColor = bgColor1;
+	}
 }
 
 function init() {
