@@ -23,31 +23,6 @@ function isHeld(dImg) {
 	return dImg.charAt(0) === 'h' ? true : false;
 }
 
-function getDiceNumCat(dNum) {
-	let category;
-	switch (dNum) {
-		case 1:
-			category = 'ones';
-			break;
-		case 2:
-			category = 'twos';
-			break;
-		case 3:
-			category = 'threes';
-			break;
-		case 4:
-			category = 'fours';
-			break;
-		case 5:
-			category = 'fives';
-			break;
-		case 6:
-			category = 'sixes';
-			break;
-	}
-	return category;
-}
-
 function rollTheDice() {
 	const dicePrefix = 'dice-';
 
@@ -71,39 +46,35 @@ function rollTheDice() {
 		} else {
 			continue;
 		}
-
-		// Update Roll Table
-		category = getDiceNumCat(diceNum);
-		addOne = rollTable.get(category) + 1;
-		rollTable.set(category, addOne);
 	}
 }
 
-function getValFromCat(category) {
-	return rollTable.get(category);
+Array.prototype.insert = function(index, item) {
+	this.splice(index, 0, item);
+};
+
+function getRollTotals() {
+	let rollTotals = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+	for (let i = 0; i < 5; i++) {
+		number = document.getElementById('dice-group').children[i].getAttribute('value');
+		rollTotals[number] += 1;
+	}
+	return rollTotals;
 }
 
 function showOptions() {
-	for (let i = 0; i < 6; i++) {
-		//console.log(document.querySelectorAll(`#s-card-${activePlayer}`)[0].children[i].className);
-		// Get an option
-		option = document.querySelectorAll(`#s-card-${activePlayer}`)[0].children[i].className;
-		if (getValFromCat(option) > 0) {
-			document.querySelector(`#s-card-${activePlayer} .${option}`).style.backgroundColor = 'yellow';
-			document.querySelector(`#s-card-${activePlayer} .${option}`).style.pointerEvents = 'auto';
+	rollTotals = getRollTotals();
+	for (let i = 1; i < 7; i++) {
+		if (rollTotals[i] > 0) {
+			document.getElementById(`${activePlayer}-${i}`).style.backgroundColor = 'yellow';
+			document.getElementById(`${activePlayer}-${i}`).style.pointerEvents = 'auto';
 		}
 	}
 }
 
 function getSelectionFromPlayer(e) {
-	// Enable roll button
-	document.querySelector('.btn-roll').disabled = false;
-	document.querySelector('.btn-roll').classList.toggle('disabled');
-
 	// Update score after player selection option
-
 	disableOptions();
-
 	if (rollNumber === 2) {
 		nextPlayer();
 	}
@@ -123,20 +94,26 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 		rollTheDice();
 		rollNumber++;
 
-		// Disable the roll button
-		document.querySelector('.btn-roll').disabled = true;
-		document.querySelector('.btn-roll').classList.toggle('disabled');
-
-		// Enable category selection for current player (activePlayer)
-		//document.getElementById(`s-card-${activePlayer}`).style.pointerEvents = 'auto';
-
-		// Disable dice group on second roll
 		if (rollNumber === 2) {
+			// Disable the roll button
+			document.querySelector('.btn-roll').disabled = true;
+			document.querySelector('.btn-roll').classList.toggle('disabled');
+			// Disable dice group on second roll
 			document.getElementById('dice-group').style.pointerEvents = 'none';
+			resetDice();
+			showOptions();
 		}
-		showOptions();
 	}
 });
+
+function resetDice() {
+	for (let i = 1; i < 6; i++) {
+		diceImg = getDiceImgFile(`dice-${i}`);
+		isHeld(diceImg) ? (diceImg = diceImg.substr(1)) : null;
+		document.getElementById(`dice-${i}`).src = `${DICE_DIR}${diceImg}`;
+		document.getElementById(`dice-${i}`).classList.remove('held');
+	}
+}
 
 // Get selection from player 1
 document.getElementById('s-card-0').addEventListener('click', (e) => {
@@ -173,61 +150,30 @@ document.getElementById('dice-group').addEventListener('click', (e) => {
 });
 
 function nextPlayer() {
-	//resetOptions();
+	document.querySelector('.btn-roll').disabled = false;
+	document.querySelector('.btn-roll').classList.toggle('disabled');
 
 	activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
 
 	document.querySelector('.player-0-panel').classList.toggle('active');
 	document.querySelector('.player-1-panel').classList.toggle('active');
 
-	resetTheDice();
-	removeAllDice();
-	resetRollTable();
-
+	resetDice();
 	document.getElementById('dice-group').style.pointerEvents = 'auto';
 	rollNumber = 0;
 }
 
-function resetTheDice() {
+function removeDice() {
+	// Clear all dice from the UI
 	for (let i = 1; i < 6; i++) {
 		diceImg = getDiceImgFile(`dice-${i}`);
 		isHeld(diceImg) ? (diceImg = diceImg.substr(1)) : null;
 		document.getElementById(`dice-${i}`).src = `${DICE_DIR}${diceImg}`;
+		document.getElementById(`dice-${i}`).removeAttribute('value');
 
-		document.getElementById(diceRef).removeAttribute('value');
-	}
-}
-
-function removeAllDice() {
-	// Clear all dice from the UI
-	for (let i = 1; i < 6; i++) {
 		document.getElementById(`dice-${i}`).style.display = 'none';
-		document.getElementById(`dice-${i}`).classList.remove('held');
 	}
 }
-
-function resetRollTable() {
-	rollTable.set('ones', 0);
-	rollTable.set('twos', 0);
-	rollTable.set('threes', 0);
-	rollTable.set('fours', 0);
-	rollTable.set('fives', 0);
-	rollTable.set('sixes', 0);
-}
-
-// function resetOptions(player = activePlayer) {
-// 	for (let i = 0; i < 6; i++) {
-// 		option = document.querySelectorAll(`#s-card-${player}`)[0].children[i].className;
-
-// 		if (player === 0) {
-// 			bgColor0 = 'white';
-// 			bgColor1 = '#d9e0f8de';
-// 		} else {
-// 			bgColor0 = '#d9e0f8de';
-// 			bgColor1 = 'white';
-// 		}
-// 	}
-// }
 
 function init() {
 	activePlayer = 0;
@@ -239,8 +185,6 @@ function init() {
 
 	document.getElementById('name-0').textContent = 'Player 1';
 	document.getElementById('name-1').textContent = 'Player 2';
-	document.querySelector('.player-0-panel').classList.remove('winner');
-	document.querySelector('.player-1-panel').classList.remove('winner');
 	document.querySelector('.player-0-panel').classList.remove('active');
 	document.querySelector('.player-1-panel').classList.remove('active');
 
@@ -250,7 +194,6 @@ function init() {
 	document.getElementById('s-card-1').style.pointerEvents = 'none';
 
 	// resetOptions(1);
-	removeAllDice();
-	resetRollTable();
+	removeDice();
 	disableOptions();
 }
