@@ -1,7 +1,13 @@
 .container {
 	margin: 0 auto;
+	pdding: 0;
 	max-width: 1280px;
 	width: 90%;
+}
+
+.game-area {
+	padding: 0;
+	margin: 0;
 }
 
 .options {
@@ -18,36 +24,53 @@
 	font-weight: 100;
 }
 
-.highlight {
+#player-0 {
+	text-align: left;
+}
+#player-1 {
+	text-align: right;
+}
+
+.valid {
 	background-color: yellow;
 }
 
-.active .player-name {
-	font-weight: 300;
+.player-name .active {
+	font-weight: 600;
+	color: blue;
 }
 
 .btn-new {
 	position: relative;
 	top: 10px;
 	left: 70px;
-	height: 60px;
+	height: 40px;
 	width: 100px;
 }
 
 .btn-roll {
 	position: relative;
-	top: 360px;
-	left: -30px;
+	top: 300px;
+	left: 60px;
 	height: 50px;
 	color: #fff;
 	background-color: rgb(116, 129, 248);
 }
 
+.btn-holdAll {
+	position: relative;
+	top: 300px;
+	left: 70px;
+	height: 30px;
+	color: #fff;
+	background-color: rgb(109, 35, 247);
+}
+
 button:not(.disabled):hover {
-	font-weight: 600;
+	font-weight: 400;
 }
 button:not(.disabled):hover i {
-	margin-right: 20px;
+	margin-right: 3px;
 }
 
 .disabled {
@@ -77,9 +100,12 @@ button:not(.disabled):hover i {
 .score-card {
 	border: 3px solid #73ad21;
 	background-color: #d9e0f8de;
-	padding: 20px;
-	padding-bottom: 30px;
-	min-width: 10px;
+	min-width: 100px;
+	max-width: 120px;
+	min-height: 420px;
+	max-height: 480px;
+	flex-basis: auto; /* default value */
+	flex-grow: 1;
 }
 .the-scores {
 	border: 3px solid #73ad21;
